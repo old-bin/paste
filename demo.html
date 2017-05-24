@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>get content from paste event/filter content</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+	<script type="text/javascript" src="paste.js"></script>
+	<script type="text/javascript" src="filter.js"></script>
+	<script type="text/javascript" src="select.js"></script>
+	<style type="text/css">
+		body, div, h2 {margin: 0;padding: 0;}
+		.wrapper {width: 1000px; margin: 50px auto 0;}
+		h2 {font-weight: normal;}
+		.editer {margin-top: 30px;width: 800px;border: 1px solid #ddd;padding: 15px; height: 500px;outline: none;font-size: 14px;color: #444;}
+
+		.test {margin-top: 40px; font-size: 14px; line-height: 24px;}
+	</style>
+</head>
+<body>
+	<script type="text/javascript">
+		$(document).ready(function($) {
+			$('.editer').on('paste', function(ev) {
+				ev.preventDefault();
+				var pasteContent = getPasteContent(ev);
+				console.log(pasteContent);
+
+				var that = $(this);
+				new Filter({
+					'html' : pasteContent,
+					'afterFilted' : function(filterHtml) {
+						that.html(filterHtml);
+						console.log(filterHtml);
+					}
+				});
+			});
+				
+			$('.test').on('click', function(ev) {
+				selection.selectAllRangs($(this).get(0));
+			});
+		});
+	</script>
+	<div class="wrapper">
+		<h2>获取粘贴事件里剪切板里的内容及内容过滤</h2>
+		<div class="editer" contenteditable="true" style="display: inline-block;">
+			
+		</div>
+
+		<div class="test">
+			<p>这里是测试文本</p>
+			<p style="color: blue;">今天天气真不错</p>
+			<p>这里是测试，测试，测试</p>
+			<p>简单地写一下应用</p>
+		</div>
+	</div>
+
+</body>
+</html>

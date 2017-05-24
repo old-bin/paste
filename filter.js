@@ -1,5 +1,5 @@
     /**
-     * FilterHtml 过滤html内容，主要应用于过滤粘贴内容
+     * Filter 过滤html内容，主要应用于过滤粘贴内容
      * @author ob
      * @param {array}     needRemovedTags {需要移除的标签名}
      * @param {array}     allowedTags     {允许的标签名}
@@ -8,7 +8,7 @@
      * @param {function}  afterFilted     {过滤完成的回调函数}
      * @param {function}  filterImg         {处理图片函数，必须有返回值，且返回值类型为string}
      */
-    function FilterHtml(opts) {
+    function Filter(opts) {
         this.needRemovedTags = ['script', 'style', 'noscript', 'head', 'meta', 'title', 'pre', 'link'];
         // 当粘贴的内容里有b,span等并且插入的位置在一段文字中间时，浏览器会在粘贴的内容后面加上一个br
         this.allowedTags = ['br', 'img', 'b', 'strong'];
@@ -29,7 +29,7 @@
         this.init();
     }
 
-    FilterHtml.prototype = {
+    Filter.prototype = {
         'init' : function() {
             if((typeof this.html != 'string') || this.html == '') return false;
 

@@ -7,7 +7,8 @@
         // paste事件的event对象，必须要传的元素，内容要从这里取
         this.e = null;
         //回调函数
-        this.dealHtml = $.noop();
+        // this.dealHtml = $.noop();
+        this.pasteContent = '';
         $.extend(this, opts);
 
         this.paste();
@@ -32,7 +33,7 @@
 
             if(pasteHtml) return true;
 
-            if(this.dealHtml) this.dealSinglePasteImg(clipboardData);
+            this.dealSinglePasteImg(clipboardData);
         },
 
         'dealPasteHtml' : function(clipboardData) {
@@ -43,13 +44,13 @@
                 pasteHtml = $.trim(clipboardData.getData('text/html'));
                 if(pasteHtml) {
                     //处理html内容
-                    is(this.dealHtml, 'function') && this.dealHtml(pasteHtml);
+                    // is(this.dealHtml, 'function') && this.dealHtml(pasteHtml);
+                    this.pasteContent = pasteHtml;
                 }
                 return pasteHtml;
             } else if(types.indexOf && types.indexOf('text/plain') !== -1) {   //safari/chrome 并不总会是'text/html'
-                pasteHtml = this.replaceTextToHtml($.trim(clipboardData.getData('text/plain')));
-                is(this.dealHtml, 'function') && this.dealHtml(pasteHtml);
-                return pasteHtml;
+                this.pasteContent = this.replaceTextToHtml($.trim(clipboardData.getData('text/plain')));
+                return this.pasteContent;
             } else {
                 // do nothing
             }
@@ -59,11 +60,10 @@
 
         //IE等不支持text/html的
         'dealPasteText' : function() {
-            var pasteHtml = '';
             var clipboardData = window.clipboardData;
             if(clipboardData && clipboardData.getData) {
-                pasteHtml = this.replaceTextToHtml(clipboardData.getData('Text'));
-                is(this.dealHtml, 'function') && this.dealHtml(pasteHtml);
+                this.pasteContent = this.replaceTextToHtml(clipboardData.getData('Text'));
+                // is(this.dealHtml, 'function') && this.dealHtml(pasteHtml);
             }
         },
 
@@ -74,7 +74,7 @@
                 $.each(clipboardData.items, $.proxy(function(i, item) {
                     if(/image/.test(item.type)) {
                         this.getImgReader(item.getAsFile(), $.proxy(function(img) {
-                            is(this.dealHtml, 'function') && this.dealHtml('<img src="' +img+ '">');
+                            this.pasteContent = '<img src="' +img+ '">';
                         }, this));
                     }
                 }, this));
@@ -104,10 +104,21 @@
                     
                 return '';
             });
+        },
+
+        'getPasteContent' : function() {
+            return this.pasteContent;
         }
     };
 
     function is(obj, type) {
         var type = type.substr(0, 1).toUpperCase() + type.substr(1);
         return {}.toString.call(obj) == '[object '+ type +']';
+    }
+
+    function getPasteContent(e) {
+        var p = new Paste({
+            e: e
+        });
+        return p.getPasteContent();
     }
