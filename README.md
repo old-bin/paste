@@ -1,2 +1,3 @@
 # paste
-paste in Rich TextArea
+
+paste.js 获取粘贴事件里剪切板里的内容，针对不同的浏览器做不同的处理。
